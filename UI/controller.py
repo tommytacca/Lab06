@@ -27,5 +27,48 @@ class Controller:
         self._view.txt_responsabile.value = f"Responsabile: {self._model.responsabile}"
         self._view.update()
 
-    # Altre Funzioni Event Handler
-    # TODO
+    def mostra_strumenti(self, e):
+        strumenti = self._model.get_strumenti()
+
+        self._view.lista_strumenti.controls.clear()
+
+        if strumenti is None:
+            self._view.show_alert("Errore durante il recupero degli strumenti dal database.")
+            return
+
+        if len(strumenti) == 0:
+            self._view.show_alert("Non ci sono strumenti nel deposito.")
+            return
+
+        for strumento in strumenti:
+            self._view.lista_strumenti.controls.append(
+                ft.Text(str(strumento))
+            )
+
+        self._view.update()
+
+    def cerca_strumenti(self, e):
+        tipo = self._view.input_tipo_strumento.value
+
+        if tipo is None or tipo.strip() == "":
+            self._view.show_alert("Inserisci il tipo di strumento da cercare.")
+            return
+
+        strumenti = self._model.cerca_strumenti_per_tipo(tipo)
+
+        self._view.lista_strumenti_ricerca.controls.clear()
+
+        if strumenti is None:
+            self._view.show_alert("Errore durante la ricerca degli strumenti nel database.")
+            return
+
+        if len(strumenti) == 0:
+            self._view.show_alert(f"Nessuno strumento trovato per il tipo: {tipo}.")
+            return
+
+        for strumento in strumenti:
+            self._view.lista_strumenti_ricerca.controls.append(
+                ft.Text(str(strumento))
+            )
+
+        self._view.update()
